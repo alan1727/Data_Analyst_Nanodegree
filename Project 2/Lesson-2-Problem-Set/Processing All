@@ -60,6 +60,7 @@ def process_file(f):
     
     with open("{}/{}".format(datadir, f), "r") as html:
         soup = BeautifulSoup(html)
+        
         for i in soup.find_all(attrs={'class':'dataTDRight'}):
             if i.name == "tr" and i.contents[2].string != "TOTAL":
                 print i.contents[0]
@@ -68,6 +69,17 @@ def process_file(f):
                 info["flights"]["domestic"] = int(i.contents[3].string.replace(',', ''))
                 info["flights"]["international"] = int(i.contents[4].string.replace(',', ''))
                 data.append(info)
+        '''
+        for row in soup.find_all('tr',attrs={'class':'dataTDRight'}):  
+            col = row.find_all('td')
+            if col[1].string != "TOTAL":
+                info["year"] = int(col[0].string)
+                info["month"] = int(col[1].string)
+                info["flights"]["domestic"] = int(col[2].string.replace(',', ''))
+                info["flights"]["international"] = int(col[3].string.replace(',', ''))
+                data.append(info)
+        '''
+           
                 
     print data
     return data
