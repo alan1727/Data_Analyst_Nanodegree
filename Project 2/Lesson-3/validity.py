@@ -29,18 +29,29 @@ def process_file(input_file, output_good, output_bad):
         reader = csv.DictReader(f)
         header = reader.fieldnames
 
-        #COMPLETE THIS FUNCTION
-
-
-
-    # This is just an example on how you can use csv.DictWriter
-    # Remember that you have to output 2 files
-    with open(output_good, "w") as g:
-        writer = csv.DictWriter(g, delimiter=",", fieldnames= header)
-        writer.writeheader()
-        for row in YOURDATA:
-            writer.writerow(row)
-
+        with open(output_good, "w") as g:
+            writer_good = csv.DictWriter(g, delimiter=",", fieldnames= header)
+            writer_good.writeheader()
+            
+            with open(output_bad, "w") as h:
+                writer_bad = csv.DictWriter(h, delimiter=",", fieldnames= header)
+                writer_bad.writeheader()
+                count = 0
+                for line in reader:
+                    if line['URI'].startswith("http://dbpedia.org"):
+                        year = line['productionStartYear'].split('-')[0]
+                        if year != 'NULL':
+                            year = int(year)
+                            line['productionStartYear'] = year
+                            if year<=2014 and year>=1886:
+                                writer_good.writerow(line)
+                                count += 1
+                                print year
+                            else:
+                                writer_bad.writerow(line)
+                        else:
+                            writer_bad.writerow(line)
+                print count
 
 def test():
 
